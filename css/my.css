@@ -6,7 +6,7 @@ html body {
 }
 
 #tableContent {
-    height: 750px;
+    height: 500px;
 	postiion:absolute;
     overflow-y: auto;    
 }
@@ -15,4 +15,9 @@ html body {
     display: inline-block;
     vertical-align: middle;
     float: none;
+}
+
+.myerror {
+     margin-top:10px;
+     position: fixed;
 }

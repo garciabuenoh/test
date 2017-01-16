@@ -50,17 +50,13 @@
 		// Clear existing row data if needed
 		jQuery(this.el).empty();
 
-		// Write the table columns
-		
+		// Write the table columns		
 		_.each(this.model.attributes, function(item, index, items){
 			if(index!= 'the_geom' && index!= 'the_geom_webmercator'){
 				jQuery(this.el).append(jQuery('<td>' + this.model.get(index) + '</td>'));
 			}		  
 		},this);
-		//jQuery(this.el).append(jQuery('<td>' + this.model.get('cartodb_id') + '</td>'));
-		//jQuery(this.el).append(jQuery('<td>' + this.model.get('street') + '</td>'));
-		//jQuery(this.el).append(jQuery('<td>' + this.model.get('comment') + '</td>'));
-
+		
 		return this;
 	  }
 	});
@@ -116,30 +112,32 @@
 			element.append(itemView.render().el);
 		});		
 
+		waitingDialog.hide();
+		
 		return this;
 	},	
 	
-	
 	prevBtnClicked: function(){
-		if(this.offset>=25){
-			this.offset-=25;			
+		if(this.offset>=10){
+			this.offset-=10;					
+		
+			var arguments = [];
+			arguments['offset'] = this.offset;
+			arguments['userName'] = this.collection.userName;
+			arguments['tableName'] = this.collection.tableName;		  
+			
+			var newCartoTable = new CartoTable(arguments);		
+			
+			this.collection = newCartoTable;
+			this.collection = newCartoTable;
+			waitingDialog.show();
+			this.collection.fetch(this.collection.fetch({success: this.render,error: this.errorHandler}));
 		}
-		
-		var arguments = [];
-		arguments['offset'] = this.offset;
-		arguments['userName'] = this.collection.userName;
-		arguments['tableName'] = this.collection.tableName;		  
-		
-		var newCartoTable = new CartoTable(arguments);		
-		
-		this.collection = newCartoTable;
-		this.collection = newCartoTable;
-		this.collection.fetch({success: this.render});	
 		
 	},
 	nextBtnClicked: function(){
 		
-		this.offset+=25;
+		this.offset+=10;
 		var arguments = [];
 		arguments['offset'] = this.offset;
 		arguments['userName'] = this.collection.userName;
@@ -147,8 +145,9 @@
 		
 		var newCartoTable = new CartoTable(arguments);
 		this.collection = newCartoTable;
-		this.collection.fetch({success: this.render});		
-	},
+		waitingDialog.show();
+		this.collection.fetch(this.collection.fetch({success: this.render,error: this.errorHandler}));
+	},	
   
 	loadBtnClicked: function(){
 		var userName = $("#userName_in").val();
@@ -164,9 +163,24 @@
 		}
 
 		this.offset = 0;
-		var newCartoTable = new CartoTable(arguments);				
+		var newCartoTable = new CartoTable(arguments);			
 		this.collection = newCartoTable;
-		this.collection.fetch({success: this.render});
-	}
+		waitingDialog.show();
+		this.collection.fetch(this.collection.fetch({success: this.render,error: function() {
+		  this.errorHandler();
+		}.bind(this)}));
+		
+	},
+	
+	errorHandler: function(collection){
+		//TODO: code for showing alerts stuff
+		waitingDialog.hide();
+		
+		$("#userName_in").value = "";
+		$("#tableName_in").value = "";
+		var newCartoTable = new CartoTable();
+		this.collection = newCartoTable;
+		this.collection.fetch(this.collection.fetch({success: this.render}));
+	},
  
 });
