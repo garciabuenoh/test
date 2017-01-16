@@ -22,22 +22,23 @@
   </head>
   <body>
 	<div id="tableViewerApp" class="container table-responsive">
-		<div class="row" style="padding-bottom:10px;padding-top:10px">
-			<div class="col-md-6 vcenter">
-				<h1>CartoDB Table viewer</h1>
-			</div>
-			<div class="col-md-2 vcenter">
-				<input type="text" class="form-control" placeholder="Username" id="userName_in"/>
-			</div>
-			<div class="col-md-2 vcenter">
-				<input type="text" class="form-control" placeholder="Tablename" id="tableName_in"/>
-			</div>
-			<div class="col-md-1 vcenter">
-				<button type="button" class="btn btn-primary" id="load_btn">LOAD DATA</button>
-			</div>			
-		</div>
+		
+			<div class="row">
+				<div class="col-md-6 vcenter">
+					<h2>CartoDB Table viewer</h2>
+				</div>
+				<div class="col-md-2 vcenter">
+					<input type="text" class="form-control" placeholder="Username" id="userName_in"/>
+				</div>
+				<div class="col-md-2 vcenter">
+					<input type="text" class="form-control" placeholder="Tablename" id="tableName_in"/>
+				</div>
+				<div class="col-md-1 vcenter">
+					<button type="button" class="btn btn-primary" id="load_btn">LOAD DATA</button>
+				</div>			
+			</div>		
 		<div class="row">
-			<div class="col-md-12">
+			<div id="tableContent" class="col-md-12">
 				<table class="table table-bordered table-hover">
 				  <thead id="headerToComplete">
 					
@@ -48,14 +49,15 @@
 				</table>
 			</div>
 		</div>
-		<div class="row" style="padding-bottom:10px;padding-top:10px">
-			<div class="col-md-1 col-md-offset-5 vcenter">
-				<button type="button" class="btn btn-primary" id="prev_btn">PREVIOUS</button>
-			</div>
-			<div class="col-md-1 vcenter">			
-				<button type="button" class="btn btn-primary" id="next_btn">NEXT</button>
-			</div>			
-		</div>
+		
+			<div class="row">
+				<div class="col-md-1 col-md-offset-5 vcenter">
+					<button type="button" class="btn btn-primary" id="prev_btn">PREVIOUS</button>
+				</div>
+				<div class="col-md-1 vcenter">			
+					<button type="button" class="btn btn-primary" id="next_btn">NEXT</button>
+				</div>			
+			</div>		
 	</div>	
   </body>
 </html>
