@@ -75,8 +75,8 @@
 
 
 	events: {
-		"click .prev_btn": "prevBtnClicked",
-		"click .next_btn": "nextBtnClicked",
+		"click #prev_btn": "prevBtnClicked",
+		"click #next_btn": "nextBtnClicked",
 		"click #load_btn": "loadBtnClicked"
 	  },  
   
