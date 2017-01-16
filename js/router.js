@@ -9,15 +9,22 @@
 
 	  index: function() {	
 		
-		//var vent = _.extend({}, Backbone.Events);	
+		var cartoHeader = new CartoHeader();		
+		cartoHeader.fetch();		
+
+		// Pass the collection of rows to the view
+		var headerView = new CartoHeaderView({model: cartoHeader});
+		// And render it
+		headerView.render();		
+		
 		
 		var cartoTable = new CartoTable();		
 		cartoTable.fetch();
 
 		// Pass the collection of rows to the view
-		var view = new CartoTableView({collection: cartoTable});
+		var tableView = new CartoTableView({collection: cartoTable});
 		// And render it
-		view.render();		
+		tableView.render();		
 		
 	  }
 	});

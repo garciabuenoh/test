@@ -17,7 +17,9 @@ html body {
     float: none;
 }
 
-.myerror {
-     margin-top:10px;
-     position: fixed;
+#floating_alert {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 5000;
 }
