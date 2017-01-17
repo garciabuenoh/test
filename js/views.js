@@ -208,7 +208,7 @@
 						this.successHandler();
 					}.bind(this),				
 					error: function (e) {
-						this.loadErrorHandler;
+						this.loadErrorHandler();
 					}.bind(this),				
 					complete: waitingDialog.hide
 				}
@@ -223,7 +223,8 @@
 		
 		loadErrorHandler: function(){
 			
-			//bootstrap_alert.warning('Failed to load dataset. Recovered dataset by default', 'danger', 5000);						
+			bootstrap_alert.warning('Failed to load dataset. Recovered dataset by default', 'danger', 5000);		
+			this.resetFormValues();			
 			var cartoTable = new CartoTable();					
 			var tableView = new CartoTableView({collection: cartoTable});	
 			this.tableView = tableView;
@@ -232,6 +233,11 @@
 		
 		navigationErrorHandler: function() {
 			bootstrap_alert.warning('Failed to navigate to the page', 'danger', 5000);						
+		},
+		
+		resetFormValues: function() {
+			$('#userName_in').val("");
+			$('#tableName_in').val("");
 		}
  
 	});
