@@ -5,6 +5,7 @@ var CartoRow = Backbone.Model.extend({
   }
 });
 
+// Model for the header
 var CartoHeader = Backbone.Model.extend({  
 	
 	url: 'https://$userName$.carto.com/api/v1/sql?q=select%20*%20from%20$tableName$%20limit%201',
@@ -65,10 +66,6 @@ var CartoTable = Backbone.Collection.extend({
   
   parse: function(data) {
     return data.rows;
-  },
-  
-  getFields: function(data) {
-	  return data.fields;
-  }
+  } 
   
 });

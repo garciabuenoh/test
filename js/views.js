@@ -1,55 +1,47 @@
-	// Views are responsible for rendering stuff on the screen (well,
-	// into the DOM).
-	//
-	// Typically views are instantiated for a model or a collection,
-	// and they watch for change events in those in order to automatically
-	// update the data shown on the screen.
 	
+	//View responsible for rendering the table header
 	var CartoHeaderView = Backbone.View.extend({
-	  // Each row will be shown as a table row
 	  
-	  el: '#headerToComplete', 
+	  
+	  tagName: 'tr',
 
 	  initialize: function(options) {
-		// Ensure our methods keep the `this` reference to the view itself
-		_.bindAll(this, 'render');
-
-		// If the model changes we need to re-render
+		  this.model = options.model;
+		
+		_.bindAll(this, 'render');	
 		this.model.bind('change', this.render);
 	  },
 
-	  render: function() {
-		// Clear existing row data if needed
-		jQuery(this.el).empty();
+	  render: function() {		
 
+		
 		// Write the table columns		
 		_.each(this.model.attributes, function(item, index, items){
 			if(index!= 'the_geom' && index!= 'the_geom_webmercator'){
-				jQuery(this.el).append(jQuery('<td>' + this.model.get(index) + '</td>'));
+				jQuery(this.el).append(jQuery('<td><strong>' + index + '</strong></td>'));
 			}		  
 		},this);
+		
 		
 		return this;
 	  }
 	});	
 
 
+	//View responsible for rendering the table rows
 	var CartoRowView = Backbone.View.extend({
-	  // Each row will be shown as a table row
+		
 	  tagName: 'tr',
 
 	  initialize: function(options) {
-		// Ensure our methods keep the `this` reference to the view itself
+		
 		_.bindAll(this, 'render');
 
 		// If the model changes we need to re-render
-		this.model.bind('change', this.render);
+		this.model.bind('change', this.render);		
 	  },
 
-	  render: function() {
-		// Clear existing row data if needed
-		jQuery(this.el).empty();
-
+	  render: function() {		
 		// Write the table columns		
 		_.each(this.model.attributes, function(item, index, items){
 			if(index!= 'the_geom' && index!= 'the_geom_webmercator'){
@@ -60,28 +52,22 @@
 		return this;
 	  }
 	});
+	
 
+	//View responsible for rendering the whole table
 	var CartoTableView = Backbone.View.extend({
 		// The collection will be kept here
 		collection: null,
-		offset: 0,
+		offset: 0,		
+		el: '#tableToComplete',
 
-		// The people list view is attached to the table body
-		el: '#tableViewerApp', 
-
-
-		events: {
-			"click #prev_btn": "prevBtnClicked",
-			"click #next_btn": "nextBtnClicked",
-			"click #load_btn": "loadBtnClicked"
-		  },  
-	  
+		
 		initialize: function(options) {
 			this.collection = options.collection;
 			this.offset = 0;		
 
 			// Ensure our methods keep the `this` reference to the view itself
-			_.bindAll(this, 'render','prevBtnClicked','nextBtnClicked','loadBtnClicked');	
+			_.bindAll(this, 'render');	
 
 			// Bind collection changes to re-rendering
 			this.collection.bind('reset', this.render);
@@ -94,25 +80,67 @@
 
 		render: function() {			
 			
-			var element = $('#bodyToComplete');
+			var headerElement = $('#headerToComplete');
+			var bodyElement = $('#bodyToComplete');
 			// Clear potential old entries first
-			element.empty();
-
+			headerElement.empty();
+			bodyElement.empty();
+			
+			var index=0;
 			// Go through the collection items
 			this.collection.forEach(function(item) {
-
-				// Instantiate a CartoRow view for each
+				
+				if(index==0)
+				{					
+					var itemView = new CartoHeaderView({
+						model: item
+					});
+					headerElement.append(itemView.render().el);									
+				}
+					
 				var itemView = new CartoRowView({
 					model: item
 				});
-
-				// Render the CartoTable, and append its element
-				// to the table
-				element.append(itemView.render().el);
+				bodyElement.append(itemView.render().el);				
+				
+				index++;
 			});		
 
 			waitingDialog.hide();
 			
+			return this;
+		} 
+	});
+	
+	//View that represent the Application. This View acts as a controller that handles events and form inputs
+	var AppView = Backbone.View.extend({		
+		
+		tableView: null,
+		offset: 0,
+
+		
+		el: '#tableViewerApp', 
+
+
+		events: {
+			"click #prev_btn": "prevBtnClicked",
+			"click #next_btn": "nextBtnClicked",
+			"click #load_btn": "loadBtnClicked"
+		  },  
+	  
+		initialize: function(options) {
+			
+			this.tableView = options.tableView;			
+			this.offset = 0;		
+			
+			_.bindAll(this, 'render','prevBtnClicked','nextBtnClicked','loadBtnClicked');			
+		
+		},
+
+		render: function() {						
+			
+			this.tableView.render();
+			waitingDialog.hide();
 			return this;
 		},	
 		
@@ -122,17 +150,18 @@
 			
 				var arguments = [];
 				arguments['offset'] = this.offset;
-				arguments['userName'] = this.collection.userName;
-				arguments['tableName'] = this.collection.tableName;		  
+				arguments['userName'] = this.tableView.collection.userName;
+				arguments['tableName'] = this.tableView.collection.tableName;		  
 				
 				var newCartoTable = new CartoTable(arguments);		
 				
-				this.collection = newCartoTable;
-				this.collection = newCartoTable;
+				this.tableView.collection = newCartoTable;
+				
 				waitingDialog.show();
-				this.collection.fetch(this.collection.fetch(
-					{success: this.render,
-					error: this.navigationErrorHandler}));
+				this.tableView.collection.fetch(
+					{success: this.tableView.render,
+					error: this.navigationErrorHandler}
+				);
 			}
 			
 		},
@@ -141,45 +170,44 @@
 			this.offset+=10;
 			var arguments = [];
 			arguments['offset'] = this.offset;
-			arguments['userName'] = this.collection.userName;
-			arguments['tableName'] = this.collection.tableName;		  
+			arguments['userName'] = this.tableView.collection.userName;
+			arguments['tableName'] = this.tableView.collection.tableName;		  
 			
 			var newCartoTable = new CartoTable(arguments);
-			this.collection = newCartoTable;
+			this.tableView.collection = newCartoTable;
 			waitingDialog.show();
-			this.collection.fetch(this.collection.fetch(
+			this.tableView.collection.fetch(
 				{
-					success: this.render,				
+					success: this.tableView.render,				
 					error: this.navigationErrorHandler,				
 					complete: waitingDialog.hide
 				}
-			));
+			);
 		},	
 	  
 		loadBtnClicked: function(){
 			var userName = $("#userName_in").val();
 			var tableName = $("#tableName_in").val();
 
-			var arguments = [];
-		 
+			var arguments = [];		 
 			if(userName.length>0){
 				arguments['userName'] = userName;		  
 			}
 			if(tableName.length>0){
 				arguments['tableName'] = tableName;		  
 			}
-
-			this.offset = 0;
+			this.offset = 0;			
+			
 			var newCartoTable = new CartoTable(arguments);			
-			this.collection = newCartoTable;
+			this.tableView.collection = newCartoTable;
 			waitingDialog.show();
-			this.collection.fetch(this.collection.fetch(
+			this.tableView.collection.fetch(
 				{
-					success: this.render,				
+					success: this.tableView.render,				
 					error: this.loadErrorHandler,				
 					complete: waitingDialog.hide
 				}
-			));
+			);		
 			
 		},
 		
