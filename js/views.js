@@ -17,9 +17,9 @@
 		
 		// Write the table columns		
 		_.each(this.model.attributes, function(item, index, items){
-			if(index!= 'the_geom' && index!= 'the_geom_webmercator'){
-				jQuery(this.el).append(jQuery('<td><strong>' + index + '</strong></td>'));
-			}		  
+			
+			jQuery(this.el).append(jQuery('<td><strong>' + index + '</strong></td>'));
+					  
 		},this);
 		
 		
@@ -46,6 +46,8 @@
 		_.each(this.model.attributes, function(item, index, items){
 			if(index!= 'the_geom' && index!= 'the_geom_webmercator'){
 				jQuery(this.el).append(jQuery('<td>' + this.model.get(index) + '</td>'));
+			}else{				
+				jQuery(this.el).append(jQuery('<td>GeoJSON</td>'));
 			}		  
 		},this);
 		
