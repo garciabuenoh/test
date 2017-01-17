@@ -145,8 +145,8 @@
 		},	
 		
 		prevBtnClicked: function(){
-			if(this.offset>=10){
-				this.offset-=10;					
+			if(this.offset>=25){
+				this.offset-=25;					
 			
 				var arguments = [];
 				arguments['offset'] = this.offset;
@@ -167,7 +167,7 @@
 		},
 		nextBtnClicked: function(){
 			
-			this.offset+=10;
+			this.offset+=25;
 			var arguments = [];
 			arguments['offset'] = this.offset;
 			arguments['userName'] = this.tableView.collection.userName;

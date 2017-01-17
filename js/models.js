@@ -39,7 +39,7 @@ var CartoHeader = Backbone.Model.extend({
 var CartoTable = Backbone.Collection.extend({	
   
   
-	url: 'https://$userName$.carto.com/api/v1/sql?q=select%20*%20from%20$tableName$%20limit%2010%20offset%20$offset$',
+	url: 'https://$userName$.carto.com/api/v1/sql?q=select%20*%20from%20$tableName$%20limit%2025%20offset%20$offset$',
 	model: CartoRow, 
 
 	initialize: function(options) {
