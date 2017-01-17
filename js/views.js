@@ -203,7 +203,10 @@
 			waitingDialog.show();
 			this.tableView.collection.fetch(
 				{
-					success: this.tableView.render,				
+					success: function (e) {
+						bootstrap_alert.warning('Dataset loaded successfully', 'success', 5000);
+						this.render();
+					}.bind(this),				
 					error: this.loadErrorHandler,				
 					complete: waitingDialog.hide
 				}
