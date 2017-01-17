@@ -63,19 +63,20 @@
 
 		
 		initialize: function(options) {
-			this.collection = options.collection;
+			if(options!=null)
+				if(options.collection!=null)
+					this.collection = options.collection;
+				
 			this.offset = 0;		
 
 			// Ensure our methods keep the `this` reference to the view itself
 			_.bindAll(this, 'render');	
 
-			// Bind collection changes to re-rendering
+			// Bind collection changes to re-rendering			
 			this.collection.bind('reset', this.render);
 			this.collection.bind('add', this.render);
-			this.collection.bind('remove', this.render);		
-			
-			//options.vent.bind("moveNext", this.moveNext);
-		
+			this.collection.bind('remove', this.render);
+					
 		},
 
 		render: function() {			
@@ -204,10 +205,11 @@
 			this.tableView.collection.fetch(
 				{
 					success: function (e) {
-						bootstrap_alert.warning('Dataset loaded successfully', 'success', 5000);
-						this.render();
+						this.successHandler();
 					}.bind(this),				
-					error: this.loadErrorHandler,				
+					error: function (e) {
+						this.loadErrorHandler;
+					}.bind(this),				
 					complete: waitingDialog.hide
 				}
 			);		
@@ -216,13 +218,16 @@
 		
 		successHandler: function() {
 			bootstrap_alert.warning('Dataset loaded successfully', 'success', 5000);
-			this.render();
+			this.tableView.render();
 		},
 		
 		loadErrorHandler: function(){
 			
-			bootstrap_alert.warning('Failed to load dataset. Recovered dataset by default', 'danger', 5000);						
-			location.href = "";			
+			//bootstrap_alert.warning('Failed to load dataset. Recovered dataset by default', 'danger', 5000);						
+			var cartoTable = new CartoTable();					
+			var tableView = new CartoTableView({collection: cartoTable});	
+			this.tableView = tableView;
+			this.tableView.collection.fetch({success: this.tableView.render()});			
 		},
 		
 		navigationErrorHandler: function() {
